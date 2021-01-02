@@ -189,7 +189,7 @@ namespace sfg
             if (m_KeepAspect)
             {
                 // Use same scale for both sides of the sprite
-                float lowerScale = std::min(scaleX, scaleY);
+                float lowerScale = scaleX < scaleY ? scaleX : scaleY;
 
                 tempSprite.scale(lowerScale, lowerScale);
 
