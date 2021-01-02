@@ -39,6 +39,7 @@ build_example( "SpinButton" "SpinButton.cpp" )
 build_example( "Canvas" "Canvas.cpp" )
 build_example( "CustomWidget" "CustomWidget.cpp" )
 build_example( "ListBox" "ListBox.cpp" )
+build_example( "RichText" "RichText.cpp" )
 build_example( "SFGUI-Test" "Test.cpp" )
 
 if( SFGUI_BOOST_FILESYSTEM_SUPPORT )
