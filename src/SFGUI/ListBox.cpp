@@ -543,7 +543,8 @@ void ListBox::UpdateScrollbarAdjustment() {
 		static_cast<float>( m_items.size() ),
 		1.f,
 		static_cast<float>( m_max_displayed_items_count ),
-		static_cast<float>( m_max_displayed_items_count )
+		static_cast<float>( m_max_displayed_items_count ), 
+        false // stick
 	);
 }
 

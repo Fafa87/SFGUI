@@ -38,6 +38,9 @@ int main() {
 	// Set the ScrolledWindow to always show the horizontal scrollbar
 	// and only show the vertical scrollbar when needed.
 	scrolledwindow->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_ALWAYS | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
+    
+    // Set sticking ON
+    scrolledwindow->SetStick(sfg::ScrolledWindow::ScrollbarSticking::YES);
 
 	// Add the ScrolledWindow box to the ScrolledWindow
 	// and create a new viewport automatically.

@@ -14,7 +14,8 @@ ScrolledWindow::ScrolledWindow( Adjustment::Ptr horizontal_adjustment, Adjustmen
 	m_vertical_scrollbar(),
 	m_viewport(),
 	m_policy( ScrollbarPolicy::DEFAULT ),
-	m_placement( Placement::DEFAULT )
+	m_placement( Placement::DEFAULT ),
+    m_stick(ScrollbarSticking::DEFAULT)
 {
 	m_horizontal_scrollbar = Scrollbar::Create( horizontal_adjustment, Scrollbar::Orientation::HORIZONTAL );
 	m_vertical_scrollbar = Scrollbar::Create( vertical_adjustment, Scrollbar::Orientation::VERTICAL );
@@ -79,6 +80,15 @@ void ScrolledWindow::SetPlacement( Placement placement ) {
 
 	RecalculateContentAllocation();
 	Invalidate();
+}
+
+void ScrolledWindow::SetStick(ScrollbarSticking stick) {
+    m_stick = stick;
+    GetHorizontalAdjustment()->SetStick(stick == ScrollbarSticking::YES);
+    GetVerticalAdjustment()->SetStick(stick == ScrollbarSticking::YES);
+
+    RecalculateContentAllocation();
+    Invalidate();
 }
 
 bool ScrolledWindow::IsHorizontalScrollbarVisible() const {

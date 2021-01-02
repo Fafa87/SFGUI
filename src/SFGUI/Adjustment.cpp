@@ -5,18 +5,19 @@ namespace sfg {
 // Signals.
 Signal::SignalID Adjustment::OnChange = 0;
 
-Adjustment::Adjustment( float value, float lower, float upper, float minor_step, float major_step, float page_size ) :
+Adjustment::Adjustment( float value, float lower, float upper, float minor_step, float major_step, float page_size, bool stick ) :
 	m_value( value ),
 	m_lower( lower ),
 	m_upper( upper ),
 	m_minor_step( minor_step ),
 	m_major_step( major_step ),
-	m_page_size( page_size )
+	m_page_size( page_size ),
+    m_stick ( stick )
 {
 }
 
-Adjustment::Ptr Adjustment::Create( float value, float lower, float upper, float minor_step, float major_step, float page_size ) {
-	return Adjustment::Ptr( new Adjustment( value, lower, upper, minor_step, major_step, page_size ) );
+Adjustment::Ptr Adjustment::Create( float value, float lower, float upper, float minor_step, float major_step, float page_size, bool stick ) {
+	return Adjustment::Ptr( new Adjustment( value, lower, upper, minor_step, major_step, page_size, stick) );
 }
 
 Adjustment& Adjustment::operator=( const Adjustment& adjustment ) {
@@ -25,7 +26,8 @@ Adjustment& Adjustment::operator=( const Adjustment& adjustment ) {
 	SetMinorStep( adjustment.m_minor_step );
 	SetMajorStep( adjustment.m_major_step );
 	SetPageSize( adjustment.m_page_size );
-	SetValue( adjustment.m_value );
+    SetValue( adjustment.m_value );
+    SetValue( adjustment.m_stick );
 
 	return *this;
 }
@@ -51,6 +53,10 @@ void Adjustment::SetValue( float new_value ) {
 	}
 }
 
+bool Adjustment::IsAtUpper() const {
+    return m_value + m_page_size >= m_upper;
+}
+
 float Adjustment::GetLower() const {
 	return m_lower;
 }
@@ -70,13 +76,25 @@ float Adjustment::GetUpper() const {
 }
 
 void Adjustment::SetUpper( float new_upper ) {
-	m_upper = new_upper;
+    if (m_upper != new_upper)
+    {
+        bool sticked = m_stick && IsAtUpper();
+        m_upper = new_upper;
 
-	if( m_upper < m_lower ) {
-		m_lower = m_upper;
-	}
+        if (m_upper < m_lower) {
+            m_lower = m_upper;
+        }
 
-	SetValue( GetValue() );
+        SetValue(sticked ? m_upper : GetValue());
+    }
+}
+
+bool Adjustment::GetStick() const {
+    return m_stick;
+}
+
+void Adjustment::SetStick(bool new_stick) {
+    m_stick = new_stick;
 }
 
 float Adjustment::GetMinorStep() const {
@@ -109,13 +127,14 @@ void Adjustment::SetPageSize( float new_page_size ) {
 	SetValue( GetValue() );
 }
 
-void Adjustment::Configure( float new_value, float new_lower, float new_upper, float new_minor_step, float new_major_step, float new_page_size ) {
+void Adjustment::Configure( float new_value, float new_lower, float new_upper, float new_minor_step, float new_major_step, float new_page_size, bool new_stick ) {
 	SetValue( new_value );
 	SetLower( new_lower );
 	SetUpper( new_upper );
 	SetMinorStep( new_minor_step );
 	SetMajorStep( new_major_step );
-	SetPageSize( new_page_size );
+    SetPageSize(new_page_size);
+    SetStick(new_stick);
 }
 
 void Adjustment::Increment() {

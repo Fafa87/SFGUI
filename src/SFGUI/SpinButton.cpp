@@ -25,7 +25,7 @@ SpinButton::SpinButton() :
 
 SpinButton::Ptr SpinButton::Create( float minimum, float maximum, float step ) {
 	auto adjustment = Adjustment::Create();
-	adjustment->Configure( minimum, minimum, maximum, step, 0.f, 0.f );
+	adjustment->Configure( minimum, minimum, maximum, step, 0.f, 0.f, false /* stick */ );
 
 	auto ptr = Ptr( new SpinButton );
 	ptr->SetAdjustment( adjustment );
