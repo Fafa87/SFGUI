@@ -12,6 +12,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <SFGUI/Widget.hpp>
+
 namespace sf
 {
 class Font;
@@ -20,7 +22,7 @@ template <class T> class Rect;
 typedef Rect<float> FloatRect;
 }
 
-namespace sfe
+namespace sfg
 {
 struct TextStroke
 {
@@ -35,13 +37,13 @@ struct Outline
     float thickness = 0.f;
 };
 
-class RichText : public sf::Drawable, public sf::Transformable
+class SFGUI_API RichText : public Widget, public sf::Drawable, public sf::Transformable
 {
 public:
     //////////////////////////////////////////////////////////////////////////
     // Nested class that represents a single line
     //////////////////////////////////////////////////////////////////////////
-    class Line : public sf::Transformable, public sf::Drawable
+    class RichLine : public sf::Transformable, public sf::Drawable
     {
     public:
         //////////////////////////////////////////////////////////////////////
@@ -121,6 +123,11 @@ public:
         //////////////////////////////////////////////////////////////////////
         sf::FloatRect getGlobalBounds() const;
 
+        //////////////////////////////////////////////////////////////////////
+        // Set top for all texts
+        //////////////////////////////////////////////////////////////////////
+        void updateTop() const;
+
     protected:
         //////////////////////////////////////////////////////////////////////
         // Draw
@@ -166,6 +173,24 @@ public:
     // Constructor
     //////////////////////////////////////////////////////////////////////////
     RichText(const sf::Font &font);
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // Please be a widget
+    ////////////////////////////////////////////////////////////////////////// 
+    typedef std::shared_ptr<RichText> Ptr; //!< Shared pointer.
+    typedef std::shared_ptr<const RichText> PtrConst; //!< Shared pointer.
+    /** Create label.
+     * @param text Text.
+     * @return Label.
+     */
+    static Ptr Create(const sf::String& text = L"");
+
+    const std::string& GetName() const override;
+
+    sf::Vector2f CalculateRequisition() override;
+    void HandleRequisitionChange() override;
+    void HandleSizeChange() override;
 
     //////////////////////////////////////////////////////////////////////////
     // Operators
@@ -230,7 +255,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
     // Get text list
     //////////////////////////////////////////////////////////////////////////
-    const std::vector<Line> &getLines() const;
+    const std::vector<RichLine> &getLines() const;
 
     //////////////////////////////////////////////////////////////////////////
     // Get character size
@@ -258,6 +283,9 @@ protected:
     //////////////////////////////////////////////////////////////////////////
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+
+    std::unique_ptr<RenderQueue> InvalidateImpl() const override;
+
 private:
     //////////////////////////////////////////////////////////////////////////
     // Delegate constructor
@@ -272,12 +300,12 @@ private:
     //////////////////////////////////////////////////////////////////////////
     // Update geometry
     //////////////////////////////////////////////////////////////////////////
-    void updateGeometry() const;
+    void updateGeometry();
 
     //////////////////////////////////////////////////////////////////////////
     // Member data
     //////////////////////////////////////////////////////////////////////////
-    mutable std::vector<Line> m_lines; ///< List of lines
+    mutable std::vector<RichLine> m_lines; ///< List of lines
     const sf::Font *m_font;            ///< Font
     unsigned int m_characterSize;      ///< Character size
     mutable sf::FloatRect m_bounds;    ///< Local bounds

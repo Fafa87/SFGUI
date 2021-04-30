@@ -162,6 +162,9 @@ void BREW::ResetProperties() {
 	SetProperty( "ListBox", "HighlightedColor", sf::Color( 0x65, 0x67, 0x62 ) );
 	SetProperty( "ListBox", "SelectedColor", sf::Color( 0x5a, 0x6a, 0x50 ) );
 
+    // RichText-specific.
+    // None as it does not use the properties for formatting.
+
 	// (Re)Enable automatic widget refreshing after we are done setting all these properties.
 	SetAutoRefresh( true );
 }
